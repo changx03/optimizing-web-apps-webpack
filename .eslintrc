@@ -8,5 +8,9 @@
       2,
       "nofunc"
     ]
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
   }
 }

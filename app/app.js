@@ -1,5 +1,7 @@
-(function () {
-  "use strict";
+'use strict';
 
-  angular.module("solitaire", ["klondike", "ngDraggable"]);
-})();
+import './klondike/scoring';
+
+angular.module('solitaire', ['klondike', 'ngDraggable']);
+
+export const value = 'Hello world!';
