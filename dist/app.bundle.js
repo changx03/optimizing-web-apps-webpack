@@ -90,21 +90,227 @@
 /*!********************!*\
   !*** ./app/app.js ***!
   \********************/
-/*! exports provided: value */
+/*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "value", function() { return value; });
 /* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./klondike/scoring */ "./app/klondike/scoring.js");
 /* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_klondike_scoring__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _klondike_klondike__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./klondike/klondike */ "./app/klondike/klondike.js");
+/* harmony import */ var _klondike_klondike__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_klondike_klondike__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _klondike_board__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./klondike/board */ "./app/klondike/board.js");
+/* harmony import */ var _klondike_board__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_klondike_board__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _klondike_game__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./klondike/game */ "./app/klondike/game.js");
+/* harmony import */ var _klondike_game__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_klondike_game__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _import_test__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./import-test */ "./app/import-test.js");
+
+// require('./klondike/scoring');
+
 
 
 
 
 angular.module('solitaire', ['klondike', 'ngDraggable']);
 
-const value = 'Hello world!';
+// export const myTest1 = 'Hello world!';
+
+// export const myTest2 = 'Greeting!';
+
+const myMaxVal = Object(_import_test__WEBPACK_IMPORTED_MODULE_4__["max"])([1, 2, 3, 4, 5]);
+
+
+/***/ }),
+
+/***/ "./app/import-test.js":
+/*!****************************!*\
+  !*** ./app/import-test.js ***!
+  \****************************/
+/*! exports provided: add, max */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add", function() { return add; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "max", function() { return max; });
+function add(a, b) {
+  console.log(`Add ${a} and ${b}`);
+  return a + b;
+}
+
+function max(list) {
+  if (!Array.isArray(list)) {
+    return list;
+  }
+  if (list.length === 0) return null;
+  return list.reduce((acc, cur) => (acc > cur ? acc : cur), list[0]);
+}
+
+function privateFunc() {
+  console.log('This is a secret!');
+}
+
+
+/***/ }),
+
+/***/ "./app/klondike/board.js":
+/*!*******************************!*\
+  !*** ./app/klondike/board.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function () {
+  "use strict";
+
+  angular.module("klondike.board", ["ngRoute", "klondike.game"])
+    .config(["$routeProvider", function ($routeProvider) {
+      $routeProvider
+        .when("/board", {
+          templateUrl: "klondike/board.html",
+          controller: "KlondikeController"
+        })
+        .otherwise({redirectTo: "/board"});
+    }])
+    .controller("KlondikeController", ["$scope", "klondikeGame", "scoring", function KlondikeController($scope, klondikeGame, scoring) {
+      klondikeGame.newGame();
+      $scope.game = klondikeGame;
+      $scope.scoring = scoring;
+    }])
+    .directive("sNoPile", function () {
+      return {
+        restrict: "E",
+        template: "<div class=\"no-pile\"></div>"
+      };
+    })
+    .directive("sTableau", function () {
+      return {
+        restrict: "E",
+        templateUrl: "klondike/piles/tableau.html"
+      };
+    })
+    .directive("sFoundation", function () {
+      return {
+        restrict: "E",
+        templateUrl: "klondike/piles/foundation.html"
+      };
+    })
+    .directive("sCard", function () {
+      return {
+        restrict: "A",
+        templateUrl: "cards/card.html",
+        scope: {
+          card: "="
+        }
+      };
+    })
+    .directive("sRemainder", function () {
+      return {
+        restrict: "E",
+        templateUrl: "klondike/piles/remainder.html"
+      };
+    })
+    .directive("sWaste", function () {
+      return {
+        restrict: "E",
+        templateUrl: "klondike/piles/waste.html"
+      };
+    });
+})();
+
+
+/***/ }),
+
+/***/ "./app/klondike/game.js":
+/*!******************************!*\
+  !*** ./app/klondike/game.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function () {
+  "use strict";
+
+  angular.module("klondike.game", [])
+    .service("klondikeGame", ["scoring", KlondikeGame]);
+
+  function KlondikeGame(scoring) {
+    this.newGame = function newGame() {
+      var cards = new Deck().shuffled();
+      this.newGameFromDeck(cards);
+    };
+
+    this.newGameFromDeck = function (cards) {
+      scoring.newGame();
+      turnAllCardsDown(cards);
+      this.tableaus = dealTableaus(cards);
+      this.foundations = buildFoundations();
+      this.remainder = dealRemainder(cards);
+    };
+
+    function turnAllCardsDown(cards) {
+      cards.forEach(function (card) {
+        card.turnDown();
+      });
+    }
+
+    function dealTableaus(cards) {
+      var tableaus = [
+        new TableauPile(cards.slice(0, 1), scoring),
+        new TableauPile(cards.slice(1, 3), scoring),
+        new TableauPile(cards.slice(3, 6), scoring),
+        new TableauPile(cards.slice(6, 10), scoring),
+        new TableauPile(cards.slice(10, 15), scoring),
+        new TableauPile(cards.slice(15, 21), scoring),
+        new TableauPile(cards.slice(21, 28), scoring)
+      ];
+      tableaus.forEach(function (tableau) {
+        tableau.turnTopCardUp();
+      });
+      return tableaus;
+    }
+
+    function buildFoundations() {
+      return _.range(1, 5)
+        .map(function () {
+          return new FoundationPile([], scoring);
+        });
+    }
+
+    function dealRemainder(cards) {
+      return new RemainderPile(cards.slice(28), scoring);
+    }
+  }
+
+  KlondikeGame.prototype.tryMoveTopCardToAnyFoundation = function (sourcePile) {
+    if (sourcePile.isEmpty()) {
+      return;
+    }
+    var foundationThatWillAccept = _.find(this.foundations, function (foundation) {
+      return foundation.willAcceptCard(sourcePile.topCard());
+    });
+    if (foundationThatWillAccept) {
+      foundationThatWillAccept.moveCardsFrom(sourcePile);
+    }
+  };
+
+})();
+
+
+/***/ }),
+
+/***/ "./app/klondike/klondike.js":
+/*!**********************************!*\
+  !*** ./app/klondike/klondike.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+angular.module("klondike", [
+  "klondike.game",
+  "klondike.board",
+  "klondike.scoring"
+]);
 
 
 /***/ }),
