@@ -37,8 +37,8 @@ IIFE wrapper and `"use strict";` are injected from `FunctionModuleTemplatePlugin
 ## Accelerating Development
 
 * watch `--watch`
-* refresh
-* hot reload
+* refresh `webpack-dev-server`
+* hot reload - based on your framework
 
 ```bash
 npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\app.bundle.js --watch
@@ -60,10 +60,70 @@ To run `npm run build` with `--watch` flag:
 
 ### devServer
 
-Serve static files multiple folders
+Go to [/webpack-dev-server](http://localhost:8080/webpack-dev-server) to check generated files.
+
+* `contentBase` Serve static files multiple folders
+* `publicPath` The bundled files will be available in the browser under this path. The default value is `/`.
 
 ```javascript
 devServer: {
-  contentBase: [path.join(__dirname, 'app'), path.join(__dirname, 'dist')]
+  contentBase: [path.join(__dirname, 'app'), path.join(__dirname, 'dist')],
+  publicPath: '/dist/', // backslash `/` must include at both side
+  watchContentBase: true, // watch files served by the contentBase
+  // hot: true // use with HotModuleReplacementPlugin
+  hotOnly: true // hot load the module but prevent refresh the page
 }
 ```
+
+* `HotModuleReplacementPlugin` will set `hot` to `true` by default.
+* `hotOnly` works when `watchContentBase` is set to `false`. Since they are overlapping each other. We include js files in `contentBase`
+* the `*.hot-update.json` file will return a 404 error. Since we serve the bundle file under `/dist/`. Resolve the problem by moving `publicPath: '/dist/'` to `output` block
+
+```javascript
+output: {
+  publicPath: '/dist/'
+},
+devServer: {
+  // publicPath: '/dist/',
+},
+```
+
+Angular demo for hot swapping function without reloading (keep states).
+
+`Scoring` is a function `angular.module("klondike.scoring", []).service("scoring", [Scoring]);`
+
+```javascript
+console.log('[scoring] evaluating')
+if (module.hot) {
+  module.hot.accept(console.log.bind(console))
+
+  const doc = angular.element(document)
+  const injector = doc.injector()
+  if (injector) {
+    const actualService = injector.get('scoring')
+    const newScoringService = new Scoring()
+    Object.keys(actualService)
+      .filter(key => typeof actualService[key] === 'function')
+      .forEach(key => actualService[key] = newScoringService[key])
+
+    doc.find('html').scope().$apply()
+    console.info('[scoring] Hot swapped!')
+  }
+}
+```
+
+### Chrome tips
+
+* Run filter from Chrome devtool Network tab: `-/cards -/bower_components  -/klondike`<br>
+* Check `Preserve log` to preserve history from reloading
+
+### Use `nodemon` to watch `webpack.conf.js` file changes
+
+```json
+{
+  "start": "nodemon -w webpack.config.js -x webpack-dev-server -- --open"
+}
+```
+
+* `-x` execute script with nodemon
+* `-- --open` to tell `nodemon` the `--open` config is not for you

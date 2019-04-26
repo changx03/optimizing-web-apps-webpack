@@ -5,7 +5,7 @@
   "devDependencies": {
     "bower": "^1.8.2",
     "eslint": "^4.9.0",
-    "http-server": "^0.10.0",
+    "http-server": "^0.11.1",
     "jasmine-core": "^2.8.0",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",
@@ -22,6 +22,6 @@
     "test-single-run": "karma start karma.conf.js --single-run",
     "build": "webpack",
     "watch": "npm run build -- --watch",
-    "start": "webpack-dev-server"
+    "start": "nodemon -w webpack.config.js -x webpack-dev-server"
   }
 }

@@ -9,3 +9,5 @@ tmp
 .idea/
 /statsgraph/
 stats.json
+
+dist/
