@@ -20,7 +20,10 @@
     "postinstall": "node node_modules/bower/bin/bower install",
     "test": "karma start karma.conf.js",
     "test-single-run": "karma start karma.conf.js --single-run",
-    "build": "webpack",
+    "build:dev_win": "set NODE_ENV=development&& webpack",
+    "build:dev_unit": "NODE_ENV=development webpack",
+    "build:prod_win": "set NODE_ENV=production&& webpack",
+    "build:prod_unix": "NODE_ENV=production webpack",
     "watch": "npm run build -- --watch",
     "start": "nodemon -w webpack.config.js -x webpack-dev-server"
   }

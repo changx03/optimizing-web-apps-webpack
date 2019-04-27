@@ -1,6 +1,6 @@
 # Webpack tutorial
 
-## Bundling code
+## Chapter: Bundling code
 
 we use `npm` for this project.
 
@@ -34,7 +34,7 @@ IIFE wrapper and `"use strict";` are injected from `FunctionModuleTemplatePlugin
 * `"use strict";` is included automatically when using `import` keyword.
 * `require()` doesn't need `"use strict";` in the bundle.
 
-## Accelerating Development
+## Chapter: Accelerating Development
 
 * watch `--watch`
 * refresh `webpack-dev-server`
@@ -138,3 +138,33 @@ In `app.bundle.js` file, this script will be wrapped with:
 * `-w` watch path/file
 * `-x` execute script with nodemon
 * `-- --open` to tell `nodemon` the `--open` config is not for you
+
+## Chapter: Dev Isn't Prod
+
+Let's set environment variable in `package.json` file:
+
+```json
+"scripts": {
+  "build:dev_win": "set NODE_ENV=development&& webpack",
+  "build:dev_unit": "NODE_ENV=development webpack",
+}
+```
+
+Windows and Linux/Mac use different bash script to set environment.
+
+### Read environment variable from `webpack.config.js` file
+
+```javascript
+const isDev = process.env.NODE_ENV === 'development'
+console.log('NODE_ENV='+process.env.NODE_ENV)
+
+const config = {
+  mode: isDev ? 'development' : 'production',
+  plugins: []
+  /* shared configurations */
+}
+
+if (isDev) {
+  config.plugins.push(new webpack.HotModuleReplacementPlugin())
+}
+```
