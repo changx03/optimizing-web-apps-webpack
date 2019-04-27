@@ -11,3 +11,4 @@ tmp
 stats.json
 
 dist/
+dist/app.bundle.js
