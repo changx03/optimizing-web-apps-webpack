@@ -1,8 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
+const colors = require('colors/safe')
 
 const isDev = process.env.NODE_ENV === 'development'
-console.log('NODE_ENV='+process.env.NODE_ENV)
+console.log(colors.green('NODE_ENV=' + process.env.NODE_ENV))
 
 const config = {
   entry: './app/app.js',
