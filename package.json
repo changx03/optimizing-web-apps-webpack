@@ -15,17 +15,19 @@
     "karma-junit-reporter": "^1.2.0",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-dev-server": "^3.3.1",
+    "webpack-merge": "^4.2.1"
   },
   "scripts": {
     "postinstall": "node node_modules/bower/bin/bower install",
     "test": "karma start karma.conf.js",
     "test-single-run": "karma start karma.conf.js --single-run",
-    "build:dev_win": "set NODE_ENV=development&& webpack",
-    "build:dev_unix": "NODE_ENV=development webpack",
-    "build:prod_win": "set NODE_ENV=production&& webpack",
-    "build:prod_unix": "NODE_ENV=production webpack",
+    "build:dev": "set NODE_ENV=development&& webpack",
+    "build:dev-unix": "NODE_ENV=development webpack",
+    "build:prod": "set NODE_ENV=production&& webpack",
+    "build:prod-unix": "NODE_ENV=production webpack",
     "watch": "npm run build -- --watch",
-    "start": "nodemon -w webpack.config.js -x webpack-dev-server"
+    "start": "set NODE_ENV=development&& nodemon -w webpack.config.js -x webpack-dev-server",
+    "start-unit": "NODE_ENV=development nodemon -w webpack.config.js -x webpack-dev-server"
   }
 }

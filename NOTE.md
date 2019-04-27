@@ -10,20 +10,20 @@ we use `npm` for this project.
 npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\app.bundle.js
 ```
 
-* `--devtool false` prevents chunks wrap with `eval()`.
+- `--devtool false` prevents chunks wrap with `eval()`.
 
 ### **IIFE** - Immediately-invoked function expression
 
 ```javascript
-;(function(){
+;(function() {
   console.log('Making a function call right now!')
 })()
 ```
 
 ### Import function from module
 
-* In `development` mode, webpack will copy all functions into the bundle, regardless export or not.
-* In `production` mode, webpack only includes the functions you imported.
+- In `development` mode, webpack will copy all functions into the bundle, regardless export or not.
+- In `production` mode, webpack only includes the functions you imported.
 
 #### ES6 Harmony Syntax
 
@@ -31,14 +31,14 @@ From `HarmonyDetectionParserPlugin` function, `module.strict` is set to `true`.
 
 IIFE wrapper and `"use strict";` are injected from `FunctionModuleTemplatePlugin` function
 
-* `"use strict";` is included automatically when using `import` keyword.
-* `require()` doesn't need `"use strict";` in the bundle.
+- `"use strict";` is included automatically when using `import` keyword.
+- `require()` doesn't need `"use strict";` in the bundle.
 
 ## Chapter: Accelerating Development
 
-* watch `--watch`
-* refresh `webpack-dev-server`
-* hot reload - based on your framework
+- watch `--watch`
+- refresh `webpack-dev-server`
+- hot reload - based on your framework
 
 ```bash
 npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\app.bundle.js --watch
@@ -62,8 +62,8 @@ To run `npm run build` with `--watch` flag:
 
 Go to [/webpack-dev-server](http://localhost:8080/webpack-dev-server) to check generated files.
 
-* `contentBase` Serve static files multiple folders
-* `publicPath` The bundled files will be available in the browser under this path. The default value is `/`.
+- `contentBase` Serve static files multiple folders
+- `publicPath` The bundled files will be available in the browser under this path. The default value is `/`.
 
 ```javascript
 devServer: {
@@ -75,9 +75,9 @@ devServer: {
 }
 ```
 
-* `HotModuleReplacementPlugin` will set `hot` to `true` by default.
-* `hotOnly` works when `watchContentBase` is set to `false`. Since they are overlapping each other. We include js files in `contentBase`
-* the `*.hot-update.json` file will return a 404 error. Since we serve the bundle file under `/dist/`. Resolve the problem by moving `publicPath: '/dist/'` to `output` block
+- `HotModuleReplacementPlugin` will set `hot` to `true` by default.
+- `hotOnly` works when `watchContentBase` is set to `false`. Since they are overlapping each other. We include js files in `contentBase`
+- the `*.hot-update.json` file will return a 404 error. Since we serve the bundle file under `/dist/`. Resolve the problem by moving `publicPath: '/dist/'` to `output` block
 
 ```javascript
 output: {
@@ -106,9 +106,12 @@ if (module.hot) {
     const newScoringService = new Scoring()
     Object.keys(actualService)
       .filter(key => typeof actualService[key] === 'function')
-      .forEach(key => actualService[key] = newScoringService[key])
+      .forEach(key => (actualService[key] = newScoringService[key]))
 
-    doc.find('html').scope().$apply()
+    doc
+      .find('html')
+      .scope()
+      .$apply()
     console.info('[scoring] Hot swapped!')
   }
 }
@@ -117,15 +120,15 @@ if (module.hot) {
 In `app.bundle.js` file, this script will be wrapped with:
 
 ```javascript
-(function(module, exports, __webpack_require__) {
+;(function(module, exports, __webpack_require__) {
   /* your code */
 })
 ```
 
 ### Chrome tips
 
-* Run filter from Chrome devtool Network tab: `-/cards -/bower_components  -/klondike`. `-` means exclude.
-* Check `Preserve log` to preserve history from reloading
+- Run filter from Chrome devtool Network tab: `-/cards -/bower_components -/klondike`. `-` means exclude.
+- Check `Preserve log` to preserve history from reloading
 
 ### Use `nodemon` to watch `webpack.conf.js` file changes
 
@@ -135,9 +138,9 @@ In `app.bundle.js` file, this script will be wrapped with:
 }
 ```
 
-* `-w` watch path/file
-* `-x` execute script with nodemon
-* `-- --open` to tell `nodemon` the `--open` config is not for you
+- `-w` watch path/file
+- `-x` execute script with nodemon
+- `-- --open` to tell `nodemon` the `--open` config is not for you
 
 ## Chapter: Dev Isn't Prod
 
@@ -156,7 +159,7 @@ Windows and Linux/Mac use different bash script to set environment.
 
 ```javascript
 const isDev = process.env.NODE_ENV === 'development'
-console.log('NODE_ENV='+process.env.NODE_ENV)
+console.log('NODE_ENV=' + process.env.NODE_ENV)
 
 const config = {
   mode: isDev ? 'development' : 'production',
@@ -168,3 +171,178 @@ if (isDev) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
 }
 ```
+
+### Minimize bundle
+
+```javascript
+optimization: {
+  minimize: false
+},
+```
+
+### Merge 2 config files with `Object.assign(target, source)`
+
+In `webpack.prod.js` file:
+
+```javascript
+const dev = rquire('./webpack.config.js')
+
+const prod = {
+  devtool: 'cheap-source-map',
+  mode: 'production',
+  optimization: {
+    minimize: true
+  },
+  plugins: ['MyPluginA', 'MyPluginB']
+}
+
+module.exports = Object.assign(dev, prod)
+```
+
+### Exporting multiple configurations
+
+`name` is used for multiple configurations. This `name` field is for console reference only. The bundle file doesn't include it.
+
+config file accept exporting function. In `function(env, argv) { return config }`, `env` is the `--env` flag, `argv` includes all flags.
+
+You can also include your custom argument.
+
+For example:
+
+```bash
+npx webpack --config webpack.multi.js --env production --hello Hello
+```
+
+It will return `env = 'production'` and `argv.hello = 'Hello'`
+
+```javascript
+const baseConfig = {
+  mode: 'development',
+  entry: './app/app.js',
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: 'app.bundle.js',
+    publicPath: '/dist/'
+  },
+  plugins: []
+}
+
+module.exports = [
+  {
+    name: 'other',
+    mode: 'development',
+    entry: './app/app.js',
+    output: {
+      path: path.join(__dirname, 'other', 'dist'),
+      filename: 'app.bundle.js',
+      publicPath: '/dist/'
+    }
+  },
+  function(env, argv) {
+    console.log(env, argv)
+    baseConfig.name = 'base'
+    baseConfig.output.path = path.join(__dirname, 'base', 'dist')
+    return baseConfig
+  }
+]
+```
+
+### Separate configuration into multiple files
+
+webpack.config.js
+webpack.config.dev.js
+webpack.config.prod.js
+
+Use `webpack-merge` or `Object.assign(target, source)`.
+
+```javascript
+function() {
+  // baseConfig.name = 'base'
+  // baseConfig.output.filename = 'app.base.bundle.js'
+  const config = merge(baseConfig, {
+    name: 'base',
+    output: {
+      filename: 'app.base.bundle.js'
+    }
+  })
+  console.log(config)
+  return config
+}
+```
+
+### Creating webpack plugin to inspect options
+
+A plugin for webpack consists of
+
+- A named JavaScript function.
+- Defines `apply` method in its prototype.
+- Specifies an event `hook` to `tap` into.
+- Manipulates webpack internal instance specific data.
+- Invokes webpack provided callback after functionality is complete.
+
+[Link](https://webpack.js.org/contribute/writing-a-plugin/) to **write a plugin**
+
+```javascript
+class LogOptionPlugin {
+  apply(compiler) {
+    compiler.hooks.beforeRun.tap(
+      'LogOptionPlugin',
+      (_compilation, _callback) => {
+        const util = require('util')
+        console.log(util.inspect(compiler.options))
+      }
+    )
+  }
+}
+```
+
+### Hot module replacement
+
+webpack.config.js
+
+```javascript
+devServer: {
+  hot: true
+},
+plugins: [
+  new webpack.HotModuleReplacementPlugin()
+]
+```
+
+scoring.js
+
+```javascript
+if (module.hot) {
+  module.hot.accept('./print.js', function() {
+    console.log('Accepting the updated printMe module!')
+    printMe()
+  })
+}
+```
+
+[Link](https://webpack.js.org/guides/hot-module-replacement/)
+
+### DefinePlugin
+
+Add global variable using `webpackDefinePlugin`.
+
+`DefinePlugin` applies simple code replacement. `string` need to wrap with `JSON.stringify()`.
+
+```javascript
+plugins: [
+  new webpack.DefinePlugin({
+    IS_DEV_MODE: process.env.NODE_ENV === 'development',
+    NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+  })
+]
+```
+
+From `scoring.js` file
+
+```javascript
+if (IS_DEV_MODE) {
+  console.log('[scoring] evaluating')
+}
+```
+
+`webpack.EnvironmentPlugin` can do the same thing for `process.env.*` [Link](https://webpack.js.org/plugins/environment-plugin)

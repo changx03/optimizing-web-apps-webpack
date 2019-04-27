@@ -1,14 +1,9 @@
 const path = require('path')
-const webpack = require('webpack')
-const colors = require('colors/safe')
-const merge = require('webpack-merge')
 
-const isDev = process.env.NODE_ENV === 'development'
-console.log(colors.green('NODE_ENV=' + process.env.NODE_ENV))
-
-const config = {
+// example of merge 2 object with Object.assign(target, source)
+const dev = {
   entry: './app/app.js',
-  mode: isDev ? 'development' : 'production',
+  mode: 'development',
   devtool: false,
   output: {
     path: path.join(__dirname, 'dist'),
@@ -27,18 +22,17 @@ const config = {
   },
   plugins: [
     // new webpack.NamedModulesPlugin(),
+    // new webpack.HotModuleReplacementPlugin()
   ]
 }
 
-if (isDev) {
-  config.plugins.push(new webpack.HotModuleReplacementPlugin())
+const prod = {
+  devtool: 'cheap-source-map',
+  mode: 'production',
+  optimization: {
+    minimize: true
+  },
+  plugins: ['MyPluginA', 'MyPluginB']
 }
 
-module.exports = merge(config, {
-  plugins: [
-    new webpack.DefinePlugin({
-      IS_DEV_MODE: isDev,
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-    })
-  ]
-})
+console.log(Object.assign(dev, prod))

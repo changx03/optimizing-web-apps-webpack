@@ -31,7 +31,12 @@ function Scoring() {
   }
 }
 
-console.log('[scoring] evaluating')
+console.log(NODE_ENV)
+
+if (IS_DEV_MODE) {
+  console.log('[scoring] evaluating')
+}
+
 if (module.hot) {
   module.hot.accept(console.log.bind(console))
 
