@@ -4,13 +4,13 @@
 
 we use `npm` for this project.
 
-### Run `npx` to run `webpack` from terminal
+### Use `npx` to run `webpack` from terminal
 
 ```bash
 npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\app.bundle.js
 ```
 
-> `--devtool false` prevents chunks wrap with `eval()`.
+* `--devtool false` prevents chunks wrap with `eval()`.
 
 ### **IIFE** - Immediately-invoked function expression
 
@@ -20,10 +20,10 @@ npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\ap
 })()
 ```
 
-### import function from module
+### Import function from module
 
-* In development mode, webpack will copy all functions into the bundle, regardless export or not.
-* In production mode, webpack only includes the functions you imported.
+* In `development` mode, webpack will copy all functions into the bundle, regardless export or not.
+* In `production` mode, webpack only includes the functions you imported.
 
 #### ES6 Harmony Syntax
 
@@ -88,9 +88,11 @@ devServer: {
 },
 ```
 
-Angular demo for hot swapping function without reloading (keep states).
+#### Angular demo for hot swapping function without reloading (keep states)
 
 `Scoring` is a function `angular.module("klondike.scoring", []).service("scoring", [Scoring]);`
+
+Add the script to `.app/klondike/scoring.js` file:
 
 ```javascript
 console.log('[scoring] evaluating')
@@ -112,9 +114,17 @@ if (module.hot) {
 }
 ```
 
+In `app.bundle.js` file, this script will be wrapped with:
+
+```javascript
+(function(module, exports, __webpack_require__) {
+  /* your code */
+})
+```
+
 ### Chrome tips
 
-* Run filter from Chrome devtool Network tab: `-/cards -/bower_components  -/klondike`<br>
+* Run filter from Chrome devtool Network tab: `-/cards -/bower_components  -/klondike`. `-` means exclude.
 * Check `Preserve log` to preserve history from reloading
 
 ### Use `nodemon` to watch `webpack.conf.js` file changes
@@ -125,5 +135,6 @@ if (module.hot) {
 }
 ```
 
+* `-w` watch path/file
 * `-x` execute script with nodemon
 * `-- --open` to tell `nodemon` the `--open` config is not for you

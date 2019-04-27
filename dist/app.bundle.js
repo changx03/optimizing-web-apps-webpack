@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "74bb9864f27011e55b79";
+/******/ 	var hotCurrentHash = "2842f8f84a648431cb85";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1027,41 +1027,61 @@ angular.module("klondike", [
   !*** ./app/klondike/scoring.js ***!
   \*********************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-angular.module("klondike.scoring", [])
-  .service("scoring", [function Scoring() {
-    "use strict";
+function Scoring() {
+  "use strict";
 
+  this.score = 0;
+
+  this.newGame = function () {
     this.score = 0;
+  };
+  this.tableauCardTurnedUp = function () {
+    this.score += 10;
+  };
+  this.dropped = function (source, destionation) {
+    this.score += scoreForMoving(source, destionation) || 0;
+  };
+  this.wasteRecycled = function () {
+    this.score = Math.max(this.score - 100, 0);
+  };
 
-    this.newGame = function () {
-      this.score = 9;
-    };
-    this.tableauCardTurnedUp = function () {
-      this.score += 5;
-    };
-    this.dropped = function (source, destionation) {
-      this.score += scoreForMoving(source, destionation) || 0;
-    };
-    this.wasteRecycled = function () {
-      this.score = Math.max(this.score - 100, 0);
-    };
-
-    function scoreForMoving(source, destionation) {
-      if (destionation.name === "TableauPile") {
-        if (source.name === "FoundationPile") {
-          return -15;
-        }
-        return 5;
+  function scoreForMoving(source, destionation) {
+    if (destionation.name === "TableauPile") {
+      if (source.name === "FoundationPile") {
+        return -15;
       }
-      if (destionation.name === "FoundationPile") {
-        if (source.name === "TableauPile" || source.name === "WastePile") {
-          return 10;
-        }
+      return 5;
+    }
+    if (destionation.name === "FoundationPile") {
+      if (source.name === "TableauPile" || source.name === "WastePile") {
+        return 10;
       }
     }
-  }]);
+  }
+}
+
+console.log('[scoring] evaluating')
+if (true) {
+  module.hot.accept(console.log.bind(console))
+
+  const doc = angular.element(document)
+  const injector = doc.injector()
+  if (injector) {
+    const actualService = injector.get('scoring')
+    const newScoringService = new Scoring()
+    Object.keys(actualService)
+      .filter(key => typeof actualService[key] === 'function')
+      .forEach(key => actualService[key] = newScoringService[key])
+    
+    doc.find('html').scope().$apply()
+    console.info('[scoring] Hot swapped!')
+  }
+}
+
+angular.module("klondike.scoring", [])
+  .service("scoring", [Scoring]);
 
 
 /***/ })
