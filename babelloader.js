@@ -7,7 +7,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /(node_modules)|(bower_components)/,
         use: [
-          { loader: 'tee-loader', options: { label: 'after' } },
+          // { loader: 'tee-loader', options: { label: 'after' } },
           'babel-loader'
         ]
       }

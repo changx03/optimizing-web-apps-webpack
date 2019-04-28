@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const colors = require('colors/safe')
 const merge = require('webpack-merge')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const babelLoader = require('./babelloader')
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -21,6 +22,7 @@ let config = {
   },
   plugins: [
     // new webpack.NamedModulesPlugin(),
+    new CleanWebpackPlugin() // <PROJECT_DIR>/dist/ is the default
   ]
 }
 

@@ -25,6 +25,13 @@ npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\ap
 - In `development` mode, webpack will copy all functions into the bundle, regardless export or not.
 - In `production` mode, webpack only includes the functions you imported.
 
+### Webpack
+
+2 major components:
+
+- **Plugin** operates on compilation level
+- **Loader** operates on module level
+
 #### ES6 Harmony Syntax
 
 From `HarmonyDetectionParserPlugin` function, `module.strict` is set to `true`.
@@ -621,3 +628,41 @@ import '!!tee-loader?label=after!babel-loader!tee-loader?label=before!./klondike
 Further study [Patching Loader](https://webpack.js.org/api/loaders/#pitching-loader)
 
 source -> babel-loader -> cache-loader -> bundle
+
+## Running Build Tasks
+
+### Cleaning output folder
+
+Unix **remove** -r recursive -f force
+
+```bash
+rm -rf dist
+```
+
+Windows **RMDIR**
+
+```bash
+# cmd /s remove subdirectories /q quiet mode
+rd /s /q "dist"
+# PowerShell
+rd -r "dist"
+```
+
+Plugins will perform anther build tasks
+
+```bash
+npm i -D clean-webpack-plugin
+```
+
+All files inside webpack's output.path directory will be removed once, but the directory itself will not be.
+
+[Link](https://github.com/johnagan/clean-webpack-plugin/blob/master/src/clean-webpack-plugin.ts) for the `clean-webpack-plugin` source file
+
+### Popular plugins
+
+- CopyWebpackPlugin
+- HtmlWebpackPlugin
+- CompressionWebpackPlugin
+- ZopfliWebpackPlugin
+
+[Awesome Webpack](https://github.com/webpack-contrib/awesome-webpack)
