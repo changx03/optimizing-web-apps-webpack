@@ -1,11 +1,8 @@
 import numeral from 'numeral'
 
 class Scoring {
-  constructor() {
-    this.score = 0
-  }
-
   newGame() {
+    setTimeout(() => { throw new Error('Oh you really did that😒...') }, 500)
     this.score = 1000
   }
 

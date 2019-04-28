@@ -35,7 +35,7 @@
     "build-unix": "NODE_ENV=development webpack",
     "build:prod": "set NODE_ENV=production&& webpack",
     "build:prod-unix": "NODE_ENV=production webpack",
-    "watch": "npm run build:dev -- --watch",
+    "watch": "npm run build -- --watch",
     "start": "set NODE_ENV=development&& nodemon -w webpack.config.js -x webpack-dev-server",
     "start-unit": "NODE_ENV=development nodemon -w webpack.config.js -x webpack-dev-server"
   }

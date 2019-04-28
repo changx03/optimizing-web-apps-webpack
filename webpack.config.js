@@ -11,7 +11,7 @@ console.log(colors.green('NODE_ENV=' + process.env.NODE_ENV))
 let config = {
   entry: './app/app.js',
   mode: isDev ? 'development' : 'production',
-  devtool: false,
+  devtool: 'eval-source-map',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'app.bundle.js',
