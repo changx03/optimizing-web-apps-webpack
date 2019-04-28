@@ -34,11 +34,20 @@ IIFE wrapper and `"use strict";` are injected from `FunctionModuleTemplatePlugin
 - `"use strict";` is included automatically when using `import` keyword.
 - `require()` doesn't need `"use strict";` in the bundle.
 
+```javascript
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./klondike/scoring */ "./app/klondike/scoring.js");
+/* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_klondike_scoring__WEBPACK_IMPORTED_MODULE_0__);
+```
+
 ## Chapter: Accelerating Development
 
 - watch `--watch`
 - refresh `webpack-dev-server`
 - hot reload - based on your framework
+
+Use `npx` to run any local npm package
 
 ```bash
 npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\app.bundle.js --watch
@@ -57,6 +66,8 @@ To run `npm run build` with `--watch` flag:
   "watch": "npm run build -- --watch"
 }
 ```
+
+The `--` in front of `-- --watch` tells this flag is not for npm.
 
 ### devServer
 
@@ -77,7 +88,8 @@ devServer: {
 
 - `HotModuleReplacementPlugin` will set `hot` to `true` by default.
 - `hotOnly` works when `watchContentBase` is set to `false`. Since they are overlapping each other. We include js files in `contentBase`
-- the `*.hot-update.json` file will return a 404 error. Since we serve the bundle file under `/dist/`. Resolve the problem by moving `publicPath: '/dist/'` to `output` block
+
+The `*.hot-update.json` file will return a 404 error. Since we serve the bundle file under `/dist/`. Resolve the problem by moving `publicPath: '/dist/'` to `output` block
 
 ```javascript
 output: {
@@ -87,6 +99,32 @@ devServer: {
   // publicPath: '/dist/',
 },
 ```
+
+### Hot module replacement
+
+webpack.config.js
+
+```javascript
+devServer: {
+  hot: true
+},
+plugins: [
+  new webpack.HotModuleReplacementPlugin()
+]
+```
+
+scoring.js
+
+```javascript
+if (module.hot) {
+  module.hot.accept('./print.js', function() {
+    console.log('Accepting the updated printMe module!')
+    printMe()
+  })
+}
+```
+
+[Link](https://webpack.js.org/guides/hot-module-replacement/)
 
 #### Angular demo for hot swapping function without reloading (keep states)
 
@@ -295,32 +333,6 @@ class LogOptionPlugin {
   }
 }
 ```
-
-### Hot module replacement
-
-webpack.config.js
-
-```javascript
-devServer: {
-  hot: true
-},
-plugins: [
-  new webpack.HotModuleReplacementPlugin()
-]
-```
-
-scoring.js
-
-```javascript
-if (module.hot) {
-  module.hot.accept('./print.js', function() {
-    console.log('Accepting the updated printMe module!')
-    printMe()
-  })
-}
-```
-
-[Link](https://webpack.js.org/guides/hot-module-replacement/)
 
 ### DefinePlugin
 
