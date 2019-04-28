@@ -478,3 +478,71 @@ import 'core-js/es6/promise'
 Use `useBuiltIns: 'entry'` option in `@babel/preset-env` to enable polyfill. After changing to `usage`, babel will only polyfill the functions we used in the code
 
 Don't include `import "@babel/polyfill";` when using `useBuiltIns: 'usage'`.
+
+```javascript
+;[
+  '@babel/preset-env',
+  {
+    debug: false,
+    modules: false,
+    targets: {
+      browsers: ['> 1%'] // ['> 1%', 'not IE <= 11']
+    },
+    useBuiltIns: 'usage',
+    corejs: 3 // the core-js version used by polyfill
+  }
+]
+```
+
+## Lecture: Loaders
+
+### Pipeline
+
+source -> babel-loader -> bundle
+
+What we will build:
+
+source -> **tee-loader** -> babel-loader -> **tee-loader** -> bundle
+
+Loaders are run in **reverse** order (e.g. `teeLeader(babelLoader(source))`)
+
+### How can webpack find loader
+
+webpack.config.js
+
+```javascript
+module.exports = {
+  //...
+  resolveLoader: {
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, 'loaders')
+    ]
+  }
+}
+```
+
+[Link](https://webpack.js.org/api/loaders/#examples) for webpack loader
+
+### Using `node` to run webpack
+
+Using the console collapse feature
+
+tee-loader.js
+
+```javascript
+module.exports = function(source) {
+  console.groupCollapsed('[tee-loader]' + this.resource)
+  console.log(source)
+  console.groupEnd()
+  return source
+}
+```
+
+Install Chrome extension `Node.js V8 --inspector Manager`
+
+In windows
+
+```bash
+set NODE_ENV=production&& node --inspect-brk .\node_modules\webpack\bin]webpack.js
+```

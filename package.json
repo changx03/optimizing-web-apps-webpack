@@ -2,7 +2,8 @@
   "name": "solitaire",
   "private": true,
   "dependencies": {
-    "@babel/polyfill": "^7.4.4"
+    "@babel/polyfill": "^7.4.4",
+    "core-js": "^3.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
