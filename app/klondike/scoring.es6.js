@@ -4,10 +4,10 @@ class Scoring {
   }
 
   newGame() {
-    // setTimeout(() => {
-    //   throw 'Oh really you did what...'
-    // }, 100)
-    this.score = 0
+    setTimeout(() => {
+      throw 'Oh really you did what...'
+    }, 100)
+    this.score = 2
   }
 
   tableauCardTurnedUp() {

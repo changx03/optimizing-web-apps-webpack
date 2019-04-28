@@ -2,11 +2,12 @@ const path = require('path')
 const webpack = require('webpack')
 const colors = require('colors/safe')
 const merge = require('webpack-merge')
+const babelLoader = require('./babelloader')
 
 const isDev = process.env.NODE_ENV === 'development'
 console.log(colors.green('NODE_ENV=' + process.env.NODE_ENV))
 
-const config = {
+let config = {
   entry: './app/app.js',
   mode: isDev ? 'development' : 'production',
   devtool: false,
@@ -14,39 +15,6 @@ const config = {
     path: path.join(__dirname, 'dist'),
     filename: 'app.bundle.js',
     publicPath: '/dist/'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)|(bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  debug: true,
-                  modules: false,
-                  targets: {
-                    browsers: ['last 1 version', '> 1%', 'IE 11']
-                  }
-                }
-              ]
-            ]
-          }
-        }
-      }
-    ]
-  },
-  devServer: {
-    contentBase: [path.join(__dirname, 'app'), path.join(__dirname, 'dist')],
-    // publicPath: '/dist/',
-    watchContentBase: false, // watch files served by the contentBase
-    // hot: true // use with HotModuleReplacementPlugin
-    hotOnly: true,
-    overlay: true
   },
   optimization: {
     minimize: false
@@ -57,7 +25,21 @@ const config = {
 }
 
 if (isDev) {
-  config.plugins.push(new webpack.HotModuleReplacementPlugin())
+  // config.plugins.push(new webpack.HotModuleReplacementPlugin())
+  config = merge(config, babelLoader, {
+    devServer: {
+      contentBase: [path.join(__dirname, 'app'), path.join(__dirname, 'dist')],
+      publicPath: '/dist/',
+      watchContentBase: false, // watch files served by the contentBase
+      // hot: true // use with HotModuleReplacementPlugin
+      hotOnly: true,
+      overlay: true
+    },
+    plugins: [new webpack.HotModuleReplacementPlugin()]
+  })
+} else {
+  // apply babel-loader only on production build
+  config = merge(config, babelLoader)
 }
 
 module.exports = merge(config, {

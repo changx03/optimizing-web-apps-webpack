@@ -399,7 +399,9 @@ module: {
                 modules: false,
                 targets: {
                   browsers: ['last 1 version', '> 1%', 'IE 11']
-                }
+                },
+                babelrc: false // ignore .babelrc file
+                // filename: '<filename>.js' // define alternative config file
               }
             ]
           ]
@@ -413,3 +415,66 @@ module: {
 `modules` option controls the `import/require` syntax
 
 `targets.browsers` uses [browserlist](https://github.com/browserslist/browserslist)
+
+`'not IE <= 11'` excludes IE.
+
+Note
+
+> Only IE doesn't have full `class` support now.
+
+#### babel-cli
+
+```bash
+npx babel app/klondike/scoring.es6.js
+```
+
+Extract babel options from `webpack.config.js` into a new file `.babelrc.js`
+
+```javascript
+module.exports = {
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        debug: true,
+        modules: false,
+        targets: {
+          browsers: ['> 1%', 'not IE <= 11']
+        }
+      }
+    ]
+  ]
+}
+```
+
+The babel-cli will load the configuration automatically
+
+We can also remove the options from `webpack.config.js`.
+`babel` will load the `.babelrc.js` file.
+
+#### Disable babel in **development** mode
+
+We don't have to transform if we know we have the latest browser.
+
+#### Polyfills
+
+> use `unpkg.com/<package_name>` to load package file from browser
+
+```bash
+npm install -D @babel/polyfill
+```
+
+> Warning: `import "@babel/polyfill";` should be used before `promise`, as early as possible
+
+Instead of import entire `core-js`, only import promise
+
+```javascript
+// import "@babel/polyfill";
+import 'core-js/es6/promise'
+```
+
+[Link](https://github.com/zloirock/core-js#ecmascript-promise) to `core-js` package
+
+Use `useBuiltIns: 'entry'` option in `@babel/preset-env` to enable polyfill. After changing to `usage`, babel will only polyfill the functions we used in the code
+
+Don't include `import "@babel/polyfill";` when using `useBuiltIns: 'usage'`.
