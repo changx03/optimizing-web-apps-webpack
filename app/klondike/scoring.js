@@ -31,9 +31,9 @@ function Scoring() {
   }
 }
 
-console.log(NODE_ENV)
+console.log(ENV_IS)
 
-if (IS_DEV_MODE) {
+if (ENV_IS_DEVELOPMENT) {
   console.log('[scoring] evaluating')
 }
 

@@ -1,4 +1,4 @@
-import './klondike/scoring';
+import './klondike/scoring.es6';
 // require('./klondike/scoring');
 import './klondike/klondike';
 import './klondike/board';

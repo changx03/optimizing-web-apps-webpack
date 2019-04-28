@@ -3,6 +3,9 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-loader": "^8.0.5",
     "bower": "^1.8.2",
     "colors": "^1.3.3",
     "eslint": "^4.9.0",
@@ -26,7 +29,7 @@
     "build:dev-unix": "NODE_ENV=development webpack",
     "build:prod": "set NODE_ENV=production&& webpack",
     "build:prod-unix": "NODE_ENV=production webpack",
-    "watch": "npm run build -- --watch",
+    "watch": "npm run build:dev -- --watch",
     "start": "set NODE_ENV=development&& nodemon -w webpack.config.js -x webpack-dev-server",
     "start-unit": "NODE_ENV=development nodemon -w webpack.config.js -x webpack-dev-server"
   }

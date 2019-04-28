@@ -35,10 +35,14 @@ IIFE wrapper and `"use strict";` are injected from `FunctionModuleTemplatePlugin
 - `require()` doesn't need `"use strict";` in the bundle.
 
 ```javascript
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./klondike/scoring */ "./app/klondike/scoring.js");
-/* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_klondike_scoring__WEBPACK_IMPORTED_MODULE_0__);
+'use strict'
+__webpack_require__.r(__webpack_exports__)
+/* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+  /*! ./klondike/scoring */ './app/klondike/scoring.js'
+)
+/* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/ __webpack_require__.n(
+  _klondike_scoring__WEBPACK_IMPORTED_MODULE_0__
+)
 ```
 
 ## Chapter: Accelerating Development
@@ -82,7 +86,8 @@ devServer: {
   publicPath: '/dist/', // backslash `/` must include at both side
   watchContentBase: true, // watch files served by the contentBase
   // hot: true // use with HotModuleReplacementPlugin
-  hotOnly: true // hot load the module but prevent refresh the page
+  hotOnly: true, // hot load the module but prevent refresh the page
+  overlay: true // show error on top of the page
 }
 ```
 
@@ -358,3 +363,53 @@ if (IS_DEV_MODE) {
 ```
 
 `webpack.EnvironmentPlugin` can do the same thing for `process.env.*` [Link](https://webpack.js.org/plugins/environment-plugin)
+
+## Chapter: Transpiling: Using the future now
+
+### Babel
+
+Tools are required for transpiling:
+
+- `babel-loader`
+
+webpack 4.x, babel-loader 8.x, babel 7.x
+
+```bash
+npm install -D babel-loader @babel/core @babel/preset-env
+```
+
+[Link](https://github.com/babel/babel-preset-env#options) for `babel-preset-env` options
+
+Using 2nd object in the array to pass extra options in the preset
+
+```javascript
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /(node_modules)|(bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                debug: true,
+                modules: false,
+                targets: {
+                  browsers: ['last 1 version', '> 1%', 'IE 11']
+                }
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+`modules` option controls the `import/require` syntax
+
+`targets.browsers` uses [browserlist](https://github.com/browserslist/browserslist)
