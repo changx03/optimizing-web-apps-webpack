@@ -1,7 +1,7 @@
 // import "@babel/polyfill";
 // import 'core-js/es6/promise'
-import './klondike/scoring.es6'
-// require('./klondike/scoring');
+// import '!!tee-loader?label=after!babel-loader!tee-loader?label=before!./klondike/scoring.es6'
+require('./klondike/scoring');
 import './klondike/klondike'
 import './klondike/board'
 import './klondike/game'

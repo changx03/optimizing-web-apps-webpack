@@ -514,10 +514,7 @@ webpack.config.js
 module.exports = {
   //...
   resolveLoader: {
-    modules: [
-      'node_modules',
-      path.resolve(__dirname, 'loaders')
-    ]
+    modules: ['node_modules', path.resolve(__dirname, 'loaders')]
   }
 }
 ```
@@ -544,5 +541,83 @@ Install Chrome extension `Node.js V8 --inspector Manager`
 In windows
 
 ```bash
-set NODE_ENV=production&& node --inspect-brk .\node_modules\webpack\bin]webpack.js
+set NODE_ENV=production&& node --inspect-brk ./node_modules/webpack/bin/webpack.js
 ```
+
+### 2 ways to set options
+
+Using query string
+
+```javascript
+'tee-loader?label=after'
+```
+
+Pass an object
+
+```javascript
+{
+  loader: 'tee-loader',
+  options: {
+    label: 'before'
+  }
+}
+```
+
+### Retrieve options from loader
+
+```javascript
+const loaderUtils = require('loader-utils')
+module.exports = function(source) {
+  const options = loaderUtils.getOptions(this) || { label: '' }
+}
+```
+
+### Running inline loader
+
+Under this setup, the `tee-loader` will only run on `scoring.es6.js`
+
+app.js
+
+```javascript
+import 'tee-loader!./klondike/scoring.es6'
+```
+
+babelloader.js
+
+```javascript
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)|(bower_components)/,
+        use: ['babel-loader']
+      }
+    ]
+  },
+  resolveLoader: {
+    modules: ['node_modules', path.resolve(__dirname, 'loaders')]
+  },
+  resolve: {
+    alias: {
+      'tee-loader': path.resolve(__dirname, 'loader', 'tee-loader')
+    }
+  }
+}
+```
+
+This mean `scoring.es6.js` will only run the `tee-loader`.
+
+```javascript
+import '!!tee-loader!./klondike/scoring.es6'
+```
+
+Running multiple loader with reverse order and passing query parameter
+
+```javascript
+import '!!tee-loader?label=after!babel-loader!tee-loader?label=before!./klondike/scoring.es6'
+```
+
+Further study [Patching Loader](https://webpack.js.org/api/loaders/#pitching-loader)
+
+source -> babel-loader -> cache-loader -> bundle
