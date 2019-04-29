@@ -11,7 +11,7 @@ console.log(colors.green('NODE_ENV=' + process.env.NODE_ENV))
 let config = {
   entry: './app/app.js',
   mode: isDev ? 'development' : 'production',
-  devtool: 'eval-source-map',
+  // devtool: 'cheap-source-map',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'app.bundle.js',
@@ -49,6 +49,10 @@ module.exports = merge(config, {
     new webpack.DefinePlugin({
       ENV_IS_DEVELOPMENT: isDev,
       ENV_IS: JSON.stringify(process.env.NODE_ENV)
-    })
+    }),
+    // new webpack.SourceMapDevToolPlugin({
+    //   filename: '[name].map',
+    //   noSources: false
+    // })
   ]
 })

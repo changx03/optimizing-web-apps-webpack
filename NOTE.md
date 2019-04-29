@@ -709,3 +709,27 @@ certutil -decode base64in.txt base64out
 ```
 
 `base64out` is a JSON object
+
+### `hidden-source-map`
+
+- Source map can leak our source code
+- With hidden source map, error points to `app.bundle.js`.
+- In Chrome, from **Sources** tab, right click and click **Add source map...**, then the error will point to original file
+
+`output.sourceMapFilename` option allows to rename source map.
+
+### `nosources-source-map`
+
+- Creating mapping but with no source file point to it
+- Only know the line number
+
+### Source map string just multiple parameters built into a string
+
+```javascript
+plugins: [
+  new webpack.SourceMapDevToolPlugin({
+    filename: '[name].map',
+    noSources: false
+  })
+]
+```
