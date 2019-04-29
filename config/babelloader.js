@@ -14,11 +14,11 @@ module.exports = {
     ]
   },
   resolveLoader: {
-    modules: ['node_modules', path.resolve(__dirname, 'loaders')]
+    modules: ['node_modules', path.resolve(__dirname, '../loaders')]
   },
   resolve: {
     alias: {
-      'tee-loader': path.resolve(__dirname, 'loader', 'tee-loader')
+      'tee-loader': path.resolve(__dirname, '../loaders/tee-loader.js')
     }
   }
 }

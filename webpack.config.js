@@ -3,7 +3,8 @@ const webpack = require('webpack')
 const colors = require('colors/safe')
 const merge = require('webpack-merge')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const babelLoader = require('./babelloader')
+const babelLoader = require('./config/babelloader')
+const codegenLoader = require('./config/codegenloader')
 
 const isDev = process.env.NODE_ENV === 'development'
 console.log(colors.green('NODE_ENV=' + process.env.NODE_ENV))
@@ -11,7 +12,7 @@ console.log(colors.green('NODE_ENV=' + process.env.NODE_ENV))
 let config = {
   entry: './app/app.js',
   mode: isDev ? 'development' : 'production',
-  // devtool: 'cheap-source-map',
+  devtool: false, //'cheap-source-map',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'app.bundle.js',
@@ -28,7 +29,7 @@ let config = {
 
 if (isDev) {
   // config.plugins.push(new webpack.HotModuleReplacementPlugin())
-  config = merge(config, babelLoader, {
+  config = merge(config, {
     devServer: {
       contentBase: [path.join(__dirname, 'app'), path.join(__dirname, 'dist')],
       publicPath: '/dist/',
@@ -39,12 +40,9 @@ if (isDev) {
     },
     plugins: [new webpack.HotModuleReplacementPlugin()]
   })
-} else {
-  // apply babel-loader only on production build
-  config = merge(config, babelLoader)
 }
 
-module.exports = merge(config, {
+module.exports = merge(config, babelLoader, codegenLoader, {
   plugins: [
     new webpack.DefinePlugin({
       ENV_IS_DEVELOPMENT: isDev,
