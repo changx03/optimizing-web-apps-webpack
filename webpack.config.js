@@ -51,5 +51,5 @@ module.exports = function(env, argv) {
     });
   }
 
-  return merge(config, babelLoader);
+  return merge(config, babelLoader, codegenLoader);
 };
