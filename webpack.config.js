@@ -1,9 +1,10 @@
-const path = require("path");
-const webpack = require("webpack");
-const colors = require("colors/safe");
-const merge = require("webpack-merge");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-const babelLoader = require("./babelloader");
+const path = require('path')
+const webpack = require('webpack')
+const colors = require('colors/safe')
+const merge = require('webpack-merge')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const babelLoader = require('./config/babelloader')
+const codegenLoader = require('./config/codegenloader')
 
 module.exports = function(env, argv) {
   const isProduction = env.production || process.env.NODE_ENV === "production";

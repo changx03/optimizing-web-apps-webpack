@@ -15,9 +15,9 @@ npx webpack --mode development --devtool false --entry .\app\app.js -o .\dist\ap
 ### **IIFE** - Immediately-invoked function expression
 
 ```javascript
-(function() {
-  console.log('Making a function call right now!');
-})();
+;(function() {
+  console.log('Making a function call right now!')
+})()
 ```
 
 ### Import function from module
@@ -42,14 +42,14 @@ IIFE wrapper and `"use strict";` are injected from `FunctionModuleTemplatePlugin
 - `require()` doesn't need `"use strict";` in the bundle.
 
 ```javascript
-'use strict';
-__webpack_require__.r(__webpack_exports__);
+'use strict'
+__webpack_require__.r(__webpack_exports__)
 /* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
   /*! ./klondike/scoring */ './app/klondike/scoring.js'
-);
+)
 /* harmony import */ var _klondike_scoring__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/ __webpack_require__.n(
   _klondike_scoring__WEBPACK_IMPORTED_MODULE_0__
-);
+)
 ```
 
 ## Chapter: Accelerating Development
@@ -130,9 +130,9 @@ scoring.js
 ```javascript
 if (module.hot) {
   module.hot.accept('./print.js', function() {
-    console.log('Accepting the updated printMe module!');
-    printMe();
-  });
+    console.log('Accepting the updated printMe module!')
+    printMe()
+  })
 }
 ```
 
@@ -145,24 +145,24 @@ if (module.hot) {
 Add the script to `.app/klondike/scoring.js` file:
 
 ```javascript
-console.log('[scoring] evaluating');
+console.log('[scoring] evaluating')
 if (module.hot) {
-  module.hot.accept(console.log.bind(console));
+  module.hot.accept(console.log.bind(console))
 
-  const doc = angular.element(document);
-  const injector = doc.injector();
+  const doc = angular.element(document)
+  const injector = doc.injector()
   if (injector) {
-    const actualService = injector.get('scoring');
-    const newScoringService = new Scoring();
+    const actualService = injector.get('scoring')
+    const newScoringService = new Scoring()
     Object.keys(actualService)
       .filter(key => typeof actualService[key] === 'function')
-      .forEach(key => (actualService[key] = newScoringService[key]));
+      .forEach(key => (actualService[key] = newScoringService[key]))
 
     doc
       .find('html')
       .scope()
-      .$apply();
-    console.info('[scoring] Hot swapped!');
+      .$apply()
+    console.info('[scoring] Hot swapped!')
   }
 }
 ```
@@ -170,9 +170,9 @@ if (module.hot) {
 In `app.bundle.js` file, this script will be wrapped with:
 
 ```javascript
-(function(module, exports, __webpack_require__) {
+;(function(module, exports, __webpack_require__) {
   /* your code */
-});
+})
 ```
 
 ### Chrome tips
@@ -208,17 +208,17 @@ Windows and Linux/Mac use different bash script to set environment.
 ### Read environment variable from `webpack.config.js` file
 
 ```javascript
-const isDev = process.env.NODE_ENV === 'development';
-console.log('NODE_ENV=' + process.env.NODE_ENV);
+const isDev = process.env.NODE_ENV === 'development'
+console.log('NODE_ENV=' + process.env.NODE_ENV)
 
 const config = {
   mode: isDev ? 'development' : 'production',
   plugins: []
   /* shared configurations */
-};
+}
 
 if (isDev) {
-  config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  config.plugins.push(new webpack.HotModuleReplacementPlugin())
 }
 ```
 
@@ -235,7 +235,7 @@ optimization: {
 In `webpack.prod.js` file:
 
 ```javascript
-const dev = rquire('./webpack.config.js');
+const dev = rquire('./webpack.config.js')
 
 const prod = {
   devtool: 'cheap-source-map',
@@ -244,9 +244,9 @@ const prod = {
     minimize: true
   },
   plugins: ['MyPluginA', 'MyPluginB']
-};
+}
 
-module.exports = Object.assign(dev, prod);
+module.exports = Object.assign(dev, prod)
 ```
 
 ### Exporting multiple configurations
@@ -275,7 +275,7 @@ const baseConfig = {
     publicPath: '/dist/'
   },
   plugins: []
-};
+}
 
 module.exports = [
   {
@@ -289,12 +289,12 @@ module.exports = [
     }
   },
   function(env, argv) {
-    console.log(env, argv);
-    baseConfig.name = 'base';
-    baseConfig.output.path = path.join(__dirname, 'base', 'dist');
-    return baseConfig;
+    console.log(env, argv)
+    baseConfig.name = 'base'
+    baseConfig.output.path = path.join(__dirname, 'base', 'dist')
+    return baseConfig
   }
-];
+]
 ```
 
 ### Separate configuration into multiple files
@@ -338,10 +338,10 @@ class LogOptionPlugin {
     compiler.hooks.beforeRun.tap(
       'LogOptionPlugin',
       (_compilation, _callback) => {
-        const util = require('util');
-        console.log(util.inspect(compiler.options));
+        const util = require('util')
+        console.log(util.inspect(compiler.options))
       }
-    );
+    )
   }
 }
 ```
@@ -358,14 +358,14 @@ plugins: [
     IS_DEV_MODE: process.env.NODE_ENV === 'development',
     NODE_ENV: JSON.stringify(process.env.NODE_ENV)
   })
-];
+]
 ```
 
 From `scoring.js` file
 
 ```javascript
 if (IS_DEV_MODE) {
-  console.log('[scoring] evaluating');
+  console.log('[scoring] evaluating')
 }
 ```
 
@@ -415,7 +415,7 @@ module: {
         }
       }
     }
-  ];
+  ]
 }
 ```
 
@@ -451,7 +451,7 @@ module.exports = {
       }
     ]
   ]
-};
+}
 ```
 
 The babel-cli will load the configuration automatically
@@ -477,7 +477,7 @@ Instead of import entire `core-js`, only import promise
 
 ```javascript
 // import "@babel/polyfill";
-import 'core-js/es6/promise';
+import 'core-js/es6/promise'
 ```
 
 [Link](https://github.com/zloirock/core-js#ecmascript-promise) to `core-js` package
@@ -487,7 +487,7 @@ Use `useBuiltIns: 'entry'` option in `@babel/preset-env` to enable polyfill. Aft
 Don't include `import "@babel/polyfill";` when using `useBuiltIns: 'usage'`.
 
 ```javascript
-[
+;[
   '@babel/preset-env',
   {
     debug: false,
@@ -498,7 +498,7 @@ Don't include `import "@babel/polyfill";` when using `useBuiltIns: 'usage'`.
     useBuiltIns: 'usage',
     corejs: 3 // the core-js version used by polyfill
   }
-];
+]
 ```
 
 ## Lecture: Loaders
@@ -523,7 +523,7 @@ module.exports = {
   resolveLoader: {
     modules: ['node_modules', path.resolve(__dirname, 'loaders')]
   }
-};
+}
 ```
 
 [Link](https://webpack.js.org/api/loaders/#examples) for webpack loader
@@ -536,11 +536,11 @@ tee-loader.js
 
 ```javascript
 module.exports = function(source) {
-  console.groupCollapsed('[tee-loader]' + this.resource);
-  console.log(source);
-  console.groupEnd();
-  return source;
-};
+  console.groupCollapsed('[tee-loader]' + this.resource)
+  console.log(source)
+  console.groupEnd()
+  return source
+}
 ```
 
 Install Chrome extension `Node.js V8 --inspector Manager`
@@ -556,7 +556,7 @@ set NODE_ENV=production&& node --inspect-brk ./node_modules/webpack/bin/webpack.
 Using query string
 
 ```javascript
-'tee-loader?label=after';
+'tee-loader?label=after'
 ```
 
 Pass an object
@@ -573,10 +573,10 @@ Pass an object
 ### Retrieve options from loader
 
 ```javascript
-const loaderUtils = require('loader-utils');
+const loaderUtils = require('loader-utils')
 module.exports = function(source) {
-  const options = loaderUtils.getOptions(this) || { label: '' };
-};
+  const options = loaderUtils.getOptions(this) || { label: '' }
+}
 ```
 
 ### Running inline loader
@@ -586,7 +586,7 @@ Under this setup, the `tee-loader` will only run on `scoring.es6.js`
 app.js
 
 ```javascript
-import 'tee-loader!./klondike/scoring.es6';
+import 'tee-loader!./klondike/scoring.es6'
 ```
 
 babelloader.js
@@ -610,19 +610,19 @@ module.exports = {
       'tee-loader': path.resolve(__dirname, 'loader', 'tee-loader')
     }
   }
-};
+}
 ```
 
 This mean `scoring.es6.js` will only run the `tee-loader`.
 
 ```javascript
-import '!!tee-loader!./klondike/scoring.es6';
+import '!!tee-loader!./klondike/scoring.es6'
 ```
 
 Running multiple loader with reverse order and passing query parameter
 
 ```javascript
-import '!!tee-loader?label=after!babel-loader!tee-loader?label=before!./klondike/scoring.es6';
+import '!!tee-loader?label=after!babel-loader!tee-loader?label=before!./klondike/scoring.es6'
 ```
 
 Further study [Patching Loader](https://webpack.js.org/api/loaders/#pitching-loader)
@@ -673,7 +673,7 @@ webpack.config.js
 
 ```javascript
 {
-  devtool: 'source-map';
+  devtool: 'source-map'
 }
 ```
 
@@ -726,3 +726,36 @@ webpack --env.production=false
 # set production to true
 webpack --env.production
 ```
+### `hidden-source-map`
+
+- Source map can leak our source code
+- With hidden source map, error points to `app.bundle.js`.
+- In Chrome, from **Sources** tab, right click and click **Add source map...**, then the error will point to original file
+
+`output.sourceMapFilename` option allows to rename source map.
+
+### `nosources-source-map`
+
+- Creating mapping but with no source file point to it
+- Only know the line number
+
+### Source map string just multiple parameters built into a string
+
+```javascript
+plugins: [
+  new webpack.SourceMapDevToolPlugin({
+    filename: '[name].map',
+    noSources: false
+  })
+]
+```
+
+## Generating Code
+
+### `code-generator-loader`
+
+Build a custom loader
+
+modular code -> code-generator-loader -> bundle
+
+`buildInfo.gen.js`
