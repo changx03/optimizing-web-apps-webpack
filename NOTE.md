@@ -709,3 +709,20 @@ certutil -decode base64in.txt base64out
 ```
 
 `base64out` is a JSON object
+
+### Exporting config as a function
+
+```javascript
+module.exports = function(env, argv) {
+  console.log(env.production)
+}
+```
+
+Passing environment options
+
+```bash
+# set production to false
+webpack --env.production=false
+# set production to true
+webpack --env.production
+```

@@ -31,12 +31,10 @@
     "postinstall": "node node_modules/bower/bin/bower install",
     "test": "karma start karma.conf.js",
     "test-single-run": "karma start karma.conf.js --single-run",
-    "build": "set NODE_ENV=development&& webpack",
-    "build-unix": "NODE_ENV=development webpack",
-    "build:prod": "set NODE_ENV=production&& webpack",
-    "build:prod-unix": "NODE_ENV=production webpack",
+    "build": "webpack --env.production=false",
+    "build:prod": "webpack --env.production",
     "watch": "npm run build -- --watch",
-    "start": "set NODE_ENV=development&& nodemon -w webpack.config.js -x webpack-dev-server",
-    "start-unit": "NODE_ENV=development nodemon -w webpack.config.js -x webpack-dev-server"
+    "start": "nodemon -w webpack.config.js -x webpack-dev-server -- --env.production=false",
+    "start-unit": "nodemon -w webpack.config.js -x webpack-dev-server -- --env.production=false"
   }
 }
